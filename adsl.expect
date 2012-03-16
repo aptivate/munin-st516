@@ -1,0 +1,11 @@
+#!/usr/bin/expect -f
+
+spawn telnet 192.168.1.254
+expect "Username :"
+send "Administrator\r\n"
+expect "Password :"
+send "\r\n"
+expect "{Administrator}=>"
+send "adsl info expand=enabled\r\n"
+expect "{Administrator}=>"
+send "exit\r\n"
