@@ -79,38 +79,38 @@ net.write("exit\r\n")
 net.close()
 
 for line in info.split("\n"):
-	m = re.search('Downstream *: +(\d+) +(\d+)', line)
-	if m: print "downstream_bw.value %s" % m.group(2) 
-
-	m = re.search('Upstream *: +(\d+) +(\d+)', line)
-	if m: print "upstream_bw.value %s" % m.group(2)
-
-	m = re.search('Number of resets *: +(\d+)', line)
-	if m: print "resets.value %s" % m.group(1)
-
 	m = re.search('Uptime.*: +(\d+) days, (\d+):(\d+):(\d+)', line)
 	if m:
 		print "uptime.value %s" % (int(m.group(1)) * 86400 + 
 			int(m.group(2)) * 3600 + int(m.group(3)) * 60 + 
 			int(m.group(4)))
 
-	m = re.search('INP +(DMT) +: ([0-9.]+) +([0-9.]+)', line)
+	m = re.search('Number of resets *: +(\d+)', line)
+	if m: print "resets.value %s" % m.group(1)
+
+	m = re.search('Downstream *: +(\d+) +(\d+)', line)
+	if m: print "downstream_bw.value %s" % m.group(2) 
+
+	m = re.search('Upstream *: +(\d+) +(\d+)', line)
+	if m: print "upstream_bw.value %s" % m.group(2)
+
+	m = re.search('INP +\(DMT\) +: +([0-9.]+) +([0-9.]+)', line)
 	if m: print "inp_dn.value %s" % m.group(1)
 	if m: print "inp_up.value %s" % m.group(2)
 
-	m = re.search('Delay +(ms) +: ([0-9.]+) +([0-9.]+)', line)
+	m = re.search('Delay +\(ms\) +: +([0-9.]+) +([0-9.]+)', line)
 	if m: print "delay_dn.value %s" % m.group(1)
 	if m: print "delay_up.value %s" % m.group(2)
 
-	m = re.search('Margin +(dB) +: ([0-9.]+) +([0-9.]+)', line)
+	m = re.search('Margin +\(dB\) +: +([0-9.]+) +([0-9.]+)', line)
 	if m: print "margin_dn.value %s" % m.group(1)
 	if m: print "margin_up.value %s" % m.group(2)
 
-	m = re.search('Attenuation +(dB) +: ([0-9.]+) +([0-9.]+)', line)
+	m = re.search('Attenuation +\(dB\) +: +([0-9.]+) +([0-9.]+)', line)
 	if m: print "attenuation_dn.value %s" % m.group(1)
 	if m: print "attenuation_up.value %s" % m.group(2)
 
-	m = re.search('OutputPower +(dB) +: ([0-9.]+) +([0-9.]+)', line)
+	m = re.search('OutputPower +\(dBm\) +: +([0-9.]+) +([0-9.]+)', line)
 	if m: print "power_dn.value %s" % m.group(1)
 	if m: print "power_up.value %s" % m.group(2)
 
@@ -129,18 +129,23 @@ for line in info.split("\n"):
 	m = re.search('Transmitted CRC *: +(\d+)', line)
 	if m: print "xmit_crc.value %s" % m.group(1)
 
-	m = re.search('Transmitted HEC *: +(\d+)', line)
+	m = re.search('Tranmsitted HEC *: +(\d+)', line)
 	if m: print "xmit_hec.value %s" % m.group(1)
 
+	if re.search('Near end failures since reset', line):
+		since_reset = True
+	elif re.search('Near end failures', line):
+		since_reset = False
+
 	m = re.search('Loss of frame *: +(\d+)', line)
-	if m: print "frame_err.value %s" % m.group(1)
+	if m and since_reset: print "frame_err.value %s" % m.group(1)
 
 	m = re.search('Loss of signal *: +(\d+)', line)
-	if m: print "signal_err.value %s" % m.group(1)
+	if m and since_reset: print "signal_err.value %s" % m.group(1)
 
 	m = re.search('Loss of power *: +(\d+)', line)
-	if m: print "power_err.value %s" % m.group(1)
+	if m and since_reset: print "power_err.value %s" % m.group(1)
 
 	m = re.search('Errored seconds *: +(\d+)', line)
-	if m: print "err_time.value %s" % m.group(1)
+	if m and since_reset: print "err_time.value %s" % m.group(1)
 
