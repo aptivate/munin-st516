@@ -89,10 +89,10 @@ for line in info.split("\n"):
 	if m: print "resets.value %s" % m.group(1)
 
 	m = re.search('Downstream *: +(\d+) +(\d+)', line)
-	if m: print "downstream_bw.value %s" % m.group(2) 
+	# if m: print "downstream_bw.value %s" % m.group(2) 
 
 	m = re.search('Upstream *: +(\d+) +(\d+)', line)
-	if m: print "upstream_bw.value %s" % m.group(2)
+	# if m: print "upstream_bw.value %s" % m.group(2)
 
 	m = re.search('INP +\(DMT\) +: +([0-9.]+) +([0-9.]+)', line)
 	if m: print "inp_dn.value %s" % m.group(1)
