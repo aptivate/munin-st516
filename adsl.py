@@ -15,10 +15,6 @@ upstream_bw.type GAUGE
 	print """
 graph_title ADSL modem statistics
 graph_category network
-downstream_bw.label Down kbps
-downstream_bw.type GAUGE
-upstream_bw.label Up kbps
-upstream_bw.type GAUGE
 resets.label Resets
 resets.type GAUGE
 inp_dn.label INP down
