@@ -6,17 +6,17 @@ import subprocess
 import telnetlib
 
 if len(sys.argv) == 2 and sys.argv[1] == "config":
-	disabled = """
-downstream_bw.label Down kbps
-downstream_bw.type GAUGE
-upstream_bw.label Up kbps
-upstream_bw.type GAUGE
-"""
 	print """
 graph_title ADSL modem statistics
 graph_category network
+graph_period minute
+downstream_bw.label Down (Mbps)
+downstream_bw.type GAUGE
+upstream_bw.label Up (Mbps)
+upstream_bw.type GAUGE
 resets.label Resets
-resets.type GAUGE
+resets.type DERIVE
+resets.cdef 0,resets,-
 inp_dn.label INP down
 inp_dn.type GAUGE
 inp_up.label INP up
@@ -40,33 +40,44 @@ power_up.type GAUGE
 rcvd_fec.label Received FEC
 rcvd_fec.type DERIVE
 rcvd_fec.min 0
+rcvd_fec.cdef 0,rcvd_fec,-
 rcvd_crc.label Received CRC
 rcvd_crc.type DERIVE
 rcvd_crc.min 0
+rcvd_crc.cdef 0,rcvd_crc,-
 rcvd_hec.label Received HEC
 rcvd_hec.type DERIVE
 rcvd_hec.min 0
+rcvd_hec.cdef 0,rcvd_hec,-
 xmit_fec.label Transmit FEC
 xmit_fec.type DERIVE
 xmit_fec.min 0
+xmit_fec.cdef 0,xmit_fec,-
 xmit_crc.label Transmit CRC
 xmit_crc.type DERIVE
 xmit_crc.min 0
+xmit_crc.cdef 0,xmit_crc,-
 xmit_hec.label Transmit HEC
 xmit_hec.type DERIVE
 xmit_hec.min 0
+xmit_hec.cdef 0,xmit_hec,-
 frame_err.label Loss of frame
 frame_err.type DERIVE
 frame_err.min 0
+frame_err.cdef 0,frame_err,-
 signal_err.label Loss of signal
 signal_err.type DERIVE
 signal_err.min 0
+signal_err.cdef 0,signal_err,-
 power_err.label Loss of power
 power_err.type DERIVE
 power_err.min 0
+power_err.cdef 0,power_err,-
 err_time.label Error time (secs)
 err_time.type DERIVE
-err_time.min 0"""
+err_time.min 0
+err_time.cdef 0,err_time,-
+"""
 	sys.exit(0)
 	
 net = telnetlib.Telnet("192.168.1.254")
@@ -91,10 +102,10 @@ for line in info.split("\n"):
 	if m: print "resets.value %s" % m.group(1)
 
 	m = re.search('Downstream *: +(\d+) +(\d+)', line)
-	# if m: print "downstream_bw.value %s" % m.group(2) 
+	if m: print "downstream_bw.value %s" % (float(m.group(2)) / 1000)
 
 	m = re.search('Upstream *: +(\d+) +(\d+)', line)
-	# if m: print "upstream_bw.value %s" % m.group(2)
+	if m: print "upstream_bw.value %s" % (float(m.group(2)) / 1000)
 
 	m = re.search('INP +\(DMT\) +: +([0-9.]+) +([0-9.]+)', line)
 	if m: print "inp_dn.value %s" % m.group(1)
