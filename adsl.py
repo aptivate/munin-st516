@@ -37,6 +37,11 @@ power_dn.label Power down (dB)
 power_dn.type GAUGE
 power_up.label Power up (dB)
 power_up.type GAUGE
+err_time.label Error time (secs)
+err_time.type DERIVE
+err_time.min 0
+"""
+	unused = """
 rcvd_fec.label Received FEC
 rcvd_fec.type DERIVE
 rcvd_fec.min 0
@@ -73,10 +78,6 @@ power_err.label Loss of power
 power_err.type DERIVE
 power_err.min 0
 power_err.cdef 0,power_err,-
-err_time.label Error time (secs)
-err_time.type DERIVE
-err_time.min 0
-err_time.cdef 0,err_time,-
 """
 	sys.exit(0)
 	
